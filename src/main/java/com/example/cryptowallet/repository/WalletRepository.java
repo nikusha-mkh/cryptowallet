@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,5 +20,7 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
     Optional<Wallet> findByAddress(String address);
 
     boolean existsByUserIdAndCurrencySymbol(UUID id, String currencySymbol);
+
+    List<Wallet> findByUserUsername(String username);
 }
 
