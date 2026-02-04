@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -122,26 +123,13 @@ public class WalletService {
         return currency + "_" + UUID.randomUUID().toString().replace("-","").substring(0,16);
     }
 
-    public Page<Transaction> getTransactionHistory(String address, int page, int size) {
-        // 1. ვამოწმებთ არსებობს თუ არა საფულე
-        if (walletRepository.findByAddress(address).isEmpty()) {
-            throw new RuntimeException("Wallet not found");
-        }
 
-        // 2. ვქმნით PageRequest ობიექტს
-        Pageable pageable = PageRequest.of(page, size);
-
-        // 3. გადავცემთ მესამე პარამეტრად pageable-ს
-        return transactionRepository.findByFromAddressOrToAddressOrderByCreatedAtDesc(
-                address,
-                address,
-                pageable
-        );
-    }
 
     public Page<Transaction> getTransactionHistoryPaged(String address, int page, int size) {
-        return transactionRepository.findByFromAddressOrToAddressOrderByCreatedAtDesc(
-                address, address, PageRequest.of(page, size));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        // ვიძახებთ ზემოთ შექმნილ მეთოდს
+        return transactionRepository.findAllByFromAddressOrToAddress(address, address, pageable);
     }
 
 

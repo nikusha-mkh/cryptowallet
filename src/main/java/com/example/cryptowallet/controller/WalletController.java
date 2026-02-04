@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class WalletController {
     public ResponseEntity<WalletResponse> createWallet(@RequestBody CreateWalletRequest request) {
         Wallet wallet = walletService.createWallet(request.userId(), request.currency());
 
-        // Entity-ს პირდაპირ დაბრუნება არ არის კარგი პრაქტიკა, ვაკონვერტირებთ DTO-ში
+
         WalletResponse response = new WalletResponse(
                 wallet.getId(),
                 wallet.getAddress(),
@@ -70,8 +69,8 @@ public class WalletController {
     public ResponseEntity<Page<Transaction>> getHistory(
             @PathVariable String address,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
+            @RequestParam(defaultValue = "10") int size
+    ) {
         return ResponseEntity.ok(walletService.getTransactionHistoryPaged(address, page, size));
     }
 
